@@ -204,6 +204,7 @@
 
   <!-- Code coverage settings -->
   <property name="coverage.out" value="${tomcat.output}/coverage"/>
+  <property name="coverage.out.xml" value="${tomcat.output}/coverage.xml"/>
   <property name="coverage.datafile" value="${coverage.out}/jacoco.exec"/>
 
   <!-- SpotBugs settings -->
@@ -2125,6 +2126,7 @@
         </sourcefiles>
       </structure>
       <html destdir="${coverage.out}"/>
+      <xml destfile="${coverage.out.xml}"/>
     </jacoco:report>
 
   </target>
