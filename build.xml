@@ -19,7 +19,15 @@
   xmlns:if="ant:if"
   xmlns:unless="ant:unless"
   xmlns:jacoco="antlib:org.jacoco.ant"
+  xmlns:cover="antlib:com.diffblue.buildsystem.cover.ant"
   >
+
+  <taskdef uri="antlib:com.diffblue.buildsystem.cover.ant" resource="com/diffblue/cover/buildsystem/ant/antlib.xml">
+    <classpath
+      path="/path/to/cover-buildsystem-ant-jar-with-dependencies.jar"/>
+  </taskdef>
+
+  <cover:installListener/>
 
   <!-- ===================== Initialize Property Values ==================== -->
 
@@ -2026,6 +2034,46 @@
   <property name="opens.sunrmi" value="--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED"/>
   <property name="opens.javautil" value="--add-opens=java.base/java.util=ALL-UNNAMED"/>
   <property name="opens.javautilconcurrent" value="--add-opens=java.base/java.util.concurrent=ALL-UNNAMED"/>
+
+
+  <target name="info" depends="compile">
+    <cover:projectModule>
+      <!-- Required for correct presentation of the project in CLI output -->
+      <cover:moduleName>${ant.project.name}</cover:moduleName>
+
+      <!-- Suggested for correct presentation of the project in CLI output -->
+      <cover:version>1.10.15</cover:version>
+
+      <!-- Required for creating tests -->
+      <cover:location location="${basedir}"/>
+      <cover:classpath>
+        <path refid="tomcat.test.classpath"/>
+      </cover:classpath>
+
+      <cover:productionSources location="java"/>
+      <cover:productionClasses location="${test.run.classes}"/>
+
+      <cover:testSources location="test"/>
+      <cover:testClasses location="${test.classes}"/>
+
+      <!-- Suggested for creating tests, not mandatory as Cover assumes sensible default values -->
+      <cover:complianceLevel>21</cover:complianceLevel>
+      <cover:encoding>UTF-8</cover:encoding>
+      <cover:junitReport location="${test.reports}"/>
+
+      <!-- Required for coverage-reports -->
+      <cover:buildDirectory location="output"/>
+      <cover:jacocoReport location="${coverage.out.xml}"/>
+      <cover:jacocoDestFile location="${coverage.datafile}"/>
+
+      <!-- Suggested for coverage reports, not mandatory as Cover assumes sensible default values -->
+      <cover:jacocoFormats>xml</cover:jacocoFormats>
+
+      <!-- Optional, if there are submodules, specify them here as a list of projectModule configurations -->
+      <cover:submodules/>
+
+    </cover:projectModule>
+  </target>
 
   <macrodef name="runtests"
             description="Runs the unit tests using the specified connector.
